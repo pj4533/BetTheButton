@@ -263,6 +263,11 @@ NSString * const ButtonColor_toString[] = {
 }
 
 - (void)reset {
+    if (_buttonBucks.integerValue == 0) {
+        _buttonBucks = @(10);
+        [self updateButtonBucks];
+    }
+    
     _chosenColor = ButtonColor_UnPicked;
     self.betStepper.maximumValue = _buttonBucks.doubleValue;
     self.betLabel.text = [NSString stringWithFormat:@"Current Bet: %@", @(self.betStepper.value)];
