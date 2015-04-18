@@ -37,8 +37,12 @@ NSString * const ButtonColor_toString[] = {
     SRWebSocket *_webSocket;
     NSNumber* _previousSecondsLeft;
     ButtonColor _chosenColor;
+    NSNumber* _chosenMultiplier;
     NSArray* _buttonColorToLowerBound;
+    NSNumber* _buttonBucks;
+    NSArray* _buttonColorToMultiplier;
 }
+
 @property (weak, nonatomic) IBOutlet UIButton *redButton;
 @property (weak, nonatomic) IBOutlet UIButton *orangeButton;
 @property (weak, nonatomic) IBOutlet UIButton *yellowButton;
@@ -47,6 +51,7 @@ NSString * const ButtonColor_toString[] = {
 @property (weak, nonatomic) IBOutlet UIButton *purpleButton;
 @property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 @property (weak, nonatomic) IBOutlet FBLCDFontView *countdownView;
+@property (weak, nonatomic) IBOutlet UILabel *buttonBucksLabel;
 
 @end
 
@@ -55,6 +60,12 @@ NSString * const ButtonColor_toString[] = {
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    _buttonBucks = @10;
+    [self updateButtonBucks];
+    
+    _buttonColorToMultiplier = @[@1000,@100,@50,@10,@5,@2,@-1];
+    [self updateButtonLabels];
+
     _buttonColorToLowerBound = @[
                                  @1,
                                  @12,
@@ -121,6 +132,25 @@ NSString * const ButtonColor_toString[] = {
     [newWebSocket open];
 }
 
+- (void)updateButtonLabels {
+    [self.purpleButton setTitle:[NSString stringWithFormat:@"%@x", _buttonColorToMultiplier[ButtonColor_Purple]]
+                       forState:UIControlStateNormal];
+    [self.blueButton setTitle:[NSString stringWithFormat:@"%@x", _buttonColorToMultiplier[ButtonColor_Blue]]
+                       forState:UIControlStateNormal];
+    [self.greenButton setTitle:[NSString stringWithFormat:@"%@x", _buttonColorToMultiplier[ButtonColor_Green]]
+                       forState:UIControlStateNormal];
+    [self.yellowButton setTitle:[NSString stringWithFormat:@"%@x", _buttonColorToMultiplier[ButtonColor_Yellow]]
+                       forState:UIControlStateNormal];
+    [self.orangeButton setTitle:[NSString stringWithFormat:@"%@x", _buttonColorToMultiplier[ButtonColor_Orange]]
+                       forState:UIControlStateNormal];
+    [self.redButton setTitle:[NSString stringWithFormat:@"%@x", _buttonColorToMultiplier[ButtonColor_Red]]
+                       forState:UIControlStateNormal];
+}
+
+- (void)updateButtonBucks {
+    self.buttonBucksLabel.text = [NSString stringWithFormat:@"Button Bucks: %@", _buttonBucks];
+}
+
 #pragma mark - SRWebSocket delegate
 
 - (void)webSocketDidOpen:(SRWebSocket *)newWebSocket {
@@ -145,6 +175,9 @@ NSString * const ButtonColor_toString[] = {
             self.statusLabel.text = [NSString stringWithFormat:@"%@: %@s  WINNER!",
                                      ButtonColor_toString[endedColor],
                                      _previousSecondsLeft];
+            
+            _buttonBucks = @(_buttonBucks.integerValue + (1 * _chosenMultiplier.integerValue));
+            [self updateButtonBucks];
         } else {
             self.statusLabel.text = [NSString stringWithFormat:@"%@: %@s  YOU LOSE",
                                      ButtonColor_toString[endedColor],
@@ -152,6 +185,9 @@ NSString * const ButtonColor_toString[] = {
         }
     }
     
+    _buttonColorToMultiplier = @[@1000,@100,@50,@10,@5,@2,@-1];
+    [self updateButtonLabels];
+
     [self reset];
     
     [UIView animateWithDuration:0.66 delay:1.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -195,7 +231,26 @@ NSString * const ButtonColor_toString[] = {
             self.statusLabel.alpha = 0.0;
         } completion:nil];
     }
-    
+
+    if (_chosenColor == ButtonColor_UnPicked) {
+        if (secondsLeft.integerValue < [_buttonColorToLowerBound[ButtonColor_Orange] integerValue]) {
+            _buttonColorToMultiplier = @[@2,@0,@0,@0,@0,@0,@-1];
+            [self updateButtonLabels];
+        } else if (secondsLeft.integerValue < [_buttonColorToLowerBound[ButtonColor_Yellow] integerValue]) {
+            _buttonColorToMultiplier = @[@5,@2,@0,@0,@0,@0,@-1];
+            [self updateButtonLabels];
+        } else if (secondsLeft.integerValue < [_buttonColorToLowerBound[ButtonColor_Green] integerValue]) {
+            _buttonColorToMultiplier = @[@10,@5,@2,@0,@0,@0,@-1];
+            [self updateButtonLabels];
+        } else if (secondsLeft.integerValue < [_buttonColorToLowerBound[ButtonColor_Blue] integerValue]) {
+            _buttonColorToMultiplier = @[@50,@10,@5,@2,@0,@0,@-1];
+            [self updateButtonLabels];
+        } else if (secondsLeft.integerValue < [_buttonColorToLowerBound[ButtonColor_Purple] integerValue]) {
+            _buttonColorToMultiplier = @[@100,@50,@10,@5,@2,@0,@-1];
+            [self updateButtonLabels];
+        }
+    }
+
     _previousSecondsLeft = secondsLeft;
 }
 
@@ -222,37 +277,54 @@ NSString * const ButtonColor_toString[] = {
     view.layer.borderWidth = 0.0f;
 }
 
+- (void)placeBetWithAmount:(NSNumber*)betAmount withColor:(ButtonColor)buttonColor {
+    _chosenColor = buttonColor;
+    _chosenMultiplier = _buttonColorToMultiplier[buttonColor];
+    _buttonBucks = @(_buttonBucks.integerValue - betAmount.integerValue);
+    [self updateButtonBucks];
+}
+
 #pragma mark - Buttons
 
 - (IBAction)purpleTapped:(id)sender {
     if (_chosenColor == ButtonColor_UnPicked) {
         [self outlineView:sender];
-        NSLog(@"PURPLE CHOSEN");
-        _chosenColor = ButtonColor_Purple;
+        [self placeBetWithAmount:@1 withColor:ButtonColor_Purple];
     }
 }
 
 - (IBAction)blueTapped:(id)sender {
     if (_chosenColor == ButtonColor_UnPicked) {
         [self outlineView:sender];
-        NSLog(@"BLUE CHOSEN");
-        _chosenColor = ButtonColor_Blue;
+        [self placeBetWithAmount:@1 withColor:ButtonColor_Blue];
     }
 }
 
 - (IBAction)greenTapped:(id)sender {
     if (_chosenColor == ButtonColor_UnPicked) {
         [self outlineView:sender];
-        NSLog(@"GREEN CHOSEN");
-        _chosenColor = ButtonColor_Green;
+        [self placeBetWithAmount:@1 withColor:ButtonColor_Green];
     }
 }
 
 - (IBAction)yellowTapped:(id)sender {
     if (_chosenColor == ButtonColor_UnPicked) {
         [self outlineView:sender];
-        NSLog(@"YELLOW CHOSEN");
-        _chosenColor = ButtonColor_Yellow;
+        [self placeBetWithAmount:@1 withColor:ButtonColor_Yellow];
+    }
+}
+
+- (IBAction)orangeTapped:(id)sender {
+    if (_chosenColor == ButtonColor_UnPicked) {
+        [self outlineView:sender];
+        [self placeBetWithAmount:@1 withColor:ButtonColor_Orange];
+    }
+}
+
+- (IBAction)redTapped:(id)sender {
+    if (_chosenColor == ButtonColor_UnPicked) {
+        [self outlineView:sender];
+        [self placeBetWithAmount:@1 withColor:ButtonColor_Red];
     }
 }
 
