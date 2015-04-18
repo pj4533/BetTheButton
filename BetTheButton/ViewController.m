@@ -270,7 +270,7 @@ NSString * const ButtonColor_toString[] = {
     
     _chosenColor = ButtonColor_UnPicked;
     self.betStepper.maximumValue = _buttonBucks.doubleValue;
-    self.betLabel.text = [NSString stringWithFormat:@"Current Bet: %@", @(self.betStepper.value)];
+    self.betLabel.text = [NSString stringWithFormat:@"Bet: %@", @(self.betStepper.value)];
 
     [self unoutlineView:self.redButton];
     [self unoutlineView:self.orangeButton];
@@ -344,7 +344,7 @@ NSString * const ButtonColor_toString[] = {
 }
 
 - (IBAction)betChanged:(id)sender {
-    self.betLabel.text = [NSString stringWithFormat:@"Current Bet: %@", @(self.betStepper.value)];
+    self.betLabel.text = [NSString stringWithFormat:@"Bet: %@", @(self.betStepper.value)];
 }
 
 @end
