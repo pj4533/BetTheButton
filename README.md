@@ -16,6 +16,11 @@ Don't know if i'll finish this...
 -  Allow variable sized bets
 -  Remember button bucks in between launches
 
+## Release Notes
+
+###  v1.0.0 (1)
+-  Inital internal beta
+
 ## Contact
 
 PJ Gray
