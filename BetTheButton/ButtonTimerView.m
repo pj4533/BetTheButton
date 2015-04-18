@@ -43,17 +43,17 @@
     }];
 
     if (secondsRemaining.integerValue > 51) {
-        _filledView.backgroundColor = [UIColor colorWithRed:130.0/255 green:0 blue:128.0/255 alpha:1];
+        _filledView.backgroundColor = [UIColor colorWithRed:130.0/255.0 green:0.0 blue:128.0/255.0 alpha:1];
     } else if (secondsRemaining.integerValue > 41) {
-        _filledView.backgroundColor = [UIColor colorWithRed:0 green:131.0/255 blue:199.0/255 alpha:1];
+        _filledView.backgroundColor = [UIColor colorWithRed:0.0 green:131.0/255 blue:199.0/255 alpha:1];
     } else if (secondsRemaining.integerValue > 31) {
-        _filledView.backgroundColor = [UIColor colorWithRed:2/255 green:190.0/255 blue:1.0/255 alpha:1];
+        _filledView.backgroundColor = [UIColor colorWithRed:2.0/255.0 green:190.0/255.0 blue:1.0/255.0 alpha:1];
     } else if (secondsRemaining.integerValue > 21) {
-        _filledView.backgroundColor = [UIColor colorWithRed:229/255 green:217.0/255 blue:0 alpha:1];
+        _filledView.backgroundColor = [UIColor colorWithRed:229.0/255.0 green:217.0/255.0 blue:0.0 alpha:1];
     } else if (secondsRemaining.integerValue > 11) {
-        _filledView.backgroundColor = [UIColor colorWithRed:229/255 green:149.0/255 blue:0 alpha:1];
+        _filledView.backgroundColor = [UIColor colorWithRed:229.0/255.0 green:149.0/255.0 blue:0.0 alpha:1];
     } else {
-        _filledView.backgroundColor = [UIColor colorWithRed:229/255 green:0 blue:0 alpha:1];
+        _filledView.backgroundColor = [UIColor colorWithRed:229.0/255.0 green:0.0 blue:0.0 alpha:1];
     }
 
 }

@@ -32,10 +32,12 @@ NSString * const ButtonColor_toString[] = {
     @"Unpicked"
 };
 
+
 @interface ViewController () <SRWebSocketDelegate> {
     SRWebSocket *_webSocket;
     NSNumber* _previousSecondsLeft;
     ButtonColor _chosenColor;
+    NSArray* _buttonColorToLowerBound;
 }
 @property (weak, nonatomic) IBOutlet UIButton *redButton;
 @property (weak, nonatomic) IBOutlet UIButton *orangeButton;
@@ -52,6 +54,16 @@ NSString * const ButtonColor_toString[] = {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _buttonColorToLowerBound = @[
+                                 @1,
+                                 @12,
+                                 @22,
+                                 @32,
+                                 @42,
+                                 @52,
+                                 @-1
+                                 ];
     
     self.countdownView.lineWidth = 4.0;
     self.countdownView.drawOffLine = YES;
@@ -134,7 +146,7 @@ NSString * const ButtonColor_toString[] = {
                                      ButtonColor_toString[endedColor],
                                      _previousSecondsLeft];
         } else {
-            self.statusLabel.text = [NSString stringWithFormat:@"%@: %@s  YOU LOSE.",
+            self.statusLabel.text = [NSString stringWithFormat:@"%@: %@s  YOU LOSE",
                                      ButtonColor_toString[endedColor],
                                      _previousSecondsLeft];
         }
@@ -173,6 +185,15 @@ NSString * const ButtonColor_toString[] = {
         } else {
             [self endedWithColor:ButtonColor_Red];
         }
+    } else if (secondsLeft.integerValue < [_buttonColorToLowerBound[_chosenColor] integerValue]) {
+        self.statusLabel.text = @"";
+        self.statusLabel.alpha = 1.0;
+        self.statusLabel.text = @"YOU LOSE";
+        [self reset];
+        
+        [UIView animateWithDuration:0.66 delay:1.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.statusLabel.alpha = 0.0;
+        } completion:nil];
     }
     
     _previousSecondsLeft = secondsLeft;
