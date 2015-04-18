@@ -68,7 +68,7 @@ NSString * const ButtonColor_toString[] = {
     
     self.betStepper.maximumValue = _buttonBucks.doubleValue;
     
-    _buttonColorToMultiplier = @[@1000,@100,@50,@10,@5,@2,@-1];
+    _buttonColorToMultiplier = @[@100,@50,@10,@5,@2,@1,@-1];
     [self updateButtonLabels];
 
     _buttonColorToLowerBound = @[
@@ -190,7 +190,7 @@ NSString * const ButtonColor_toString[] = {
         }
     }
     
-    _buttonColorToMultiplier = @[@1000,@100,@50,@10,@5,@2,@-1];
+    _buttonColorToMultiplier = @[@100,@50,@10,@5,@2,@1,@-1];
     [self updateButtonLabels];
 
     [self reset];
@@ -239,19 +239,19 @@ NSString * const ButtonColor_toString[] = {
 
     if (_chosenColor == ButtonColor_UnPicked) {
         if (secondsLeft.integerValue < [_buttonColorToLowerBound[ButtonColor_Orange] integerValue]) {
-            _buttonColorToMultiplier = @[@2,@0,@0,@0,@0,@0,@-1];
+            _buttonColorToMultiplier = @[@1,@0,@0,@0,@0,@0,@-1];
             [self updateButtonLabels];
         } else if (secondsLeft.integerValue < [_buttonColorToLowerBound[ButtonColor_Yellow] integerValue]) {
-            _buttonColorToMultiplier = @[@5,@2,@0,@0,@0,@0,@-1];
+            _buttonColorToMultiplier = @[@2,@1,@0,@0,@0,@0,@-1];
             [self updateButtonLabels];
         } else if (secondsLeft.integerValue < [_buttonColorToLowerBound[ButtonColor_Green] integerValue]) {
-            _buttonColorToMultiplier = @[@10,@5,@2,@0,@0,@0,@-1];
+            _buttonColorToMultiplier = @[@5,@2,@1,@0,@0,@0,@-1];
             [self updateButtonLabels];
         } else if (secondsLeft.integerValue < [_buttonColorToLowerBound[ButtonColor_Blue] integerValue]) {
-            _buttonColorToMultiplier = @[@50,@10,@5,@2,@0,@0,@-1];
+            _buttonColorToMultiplier = @[@10,@5,@2,@1,@0,@0,@-1];
             [self updateButtonLabels];
         } else if (secondsLeft.integerValue < [_buttonColorToLowerBound[ButtonColor_Purple] integerValue]) {
-            _buttonColorToMultiplier = @[@100,@50,@10,@5,@2,@0,@-1];
+            _buttonColorToMultiplier = @[@50,@10,@5,@2,@1,@0,@-1];
             [self updateButtonLabels];
         }
     }
