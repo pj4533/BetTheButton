@@ -38,6 +38,7 @@ NSString * const ButtonColor_toString[] = {
     NSNumber* _previousSecondsLeft;
     ButtonColor _chosenColor;
     NSNumber* _chosenMultiplier;
+    NSNumber* _chosenBet;
     NSArray* _buttonColorToLowerBound;
     NSNumber* _buttonBucks;
     NSArray* _buttonColorToMultiplier;
@@ -52,6 +53,8 @@ NSString * const ButtonColor_toString[] = {
 @property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 @property (weak, nonatomic) IBOutlet FBLCDFontView *countdownView;
 @property (weak, nonatomic) IBOutlet UILabel *buttonBucksLabel;
+@property (weak, nonatomic) IBOutlet UIStepper *betStepper;
+@property (weak, nonatomic) IBOutlet UILabel *betLabel;
 
 @end
 
@@ -62,6 +65,8 @@ NSString * const ButtonColor_toString[] = {
     
     _buttonBucks = @10;
     [self updateButtonBucks];
+    
+    self.betStepper.maximumValue = _buttonBucks.doubleValue;
     
     _buttonColorToMultiplier = @[@1000,@100,@50,@10,@5,@2,@-1];
     [self updateButtonLabels];
@@ -176,7 +181,7 @@ NSString * const ButtonColor_toString[] = {
                                      ButtonColor_toString[endedColor],
                                      _previousSecondsLeft];
             
-            _buttonBucks = @(_buttonBucks.integerValue + (1 * _chosenMultiplier.integerValue));
+            _buttonBucks = @(_buttonBucks.integerValue + (_chosenBet.integerValue * _chosenMultiplier.integerValue));
             [self updateButtonBucks];
         } else {
             self.statusLabel.text = [NSString stringWithFormat:@"%@: %@s  YOU LOSE",
@@ -259,6 +264,9 @@ NSString * const ButtonColor_toString[] = {
 
 - (void)reset {
     _chosenColor = ButtonColor_UnPicked;
+    self.betStepper.maximumValue = _buttonBucks.doubleValue;
+    self.betLabel.text = [NSString stringWithFormat:@"Current Bet: %@", @(self.betStepper.value)];
+
     [self unoutlineView:self.redButton];
     [self unoutlineView:self.orangeButton];
     [self unoutlineView:self.yellowButton];
@@ -280,53 +288,58 @@ NSString * const ButtonColor_toString[] = {
 - (void)placeBetWithAmount:(NSNumber*)betAmount withColor:(ButtonColor)buttonColor {
     _chosenColor = buttonColor;
     _chosenMultiplier = _buttonColorToMultiplier[buttonColor];
+    _chosenBet = betAmount;
     _buttonBucks = @(_buttonBucks.integerValue - betAmount.integerValue);
     [self updateButtonBucks];
+    self.betStepper.maximumValue = _buttonBucks.doubleValue;
 }
 
 #pragma mark - Buttons
 
 - (IBAction)purpleTapped:(id)sender {
-    if (_chosenColor == ButtonColor_UnPicked) {
+    if ((_chosenColor == ButtonColor_UnPicked) && (_buttonBucks.integerValue >= self.betStepper.value)) {
         [self outlineView:sender];
-        [self placeBetWithAmount:@1 withColor:ButtonColor_Purple];
+        [self placeBetWithAmount:@(self.betStepper.value) withColor:ButtonColor_Purple];
     }
 }
 
 - (IBAction)blueTapped:(id)sender {
-    if (_chosenColor == ButtonColor_UnPicked) {
+    if ((_chosenColor == ButtonColor_UnPicked) && (_buttonBucks.integerValue >= self.betStepper.value)) {
         [self outlineView:sender];
-        [self placeBetWithAmount:@1 withColor:ButtonColor_Blue];
+        [self placeBetWithAmount:@(self.betStepper.value) withColor:ButtonColor_Blue];
     }
 }
 
 - (IBAction)greenTapped:(id)sender {
-    if (_chosenColor == ButtonColor_UnPicked) {
+    if ((_chosenColor == ButtonColor_UnPicked) && (_buttonBucks.integerValue >= self.betStepper.value)) {
         [self outlineView:sender];
-        [self placeBetWithAmount:@1 withColor:ButtonColor_Green];
+        [self placeBetWithAmount:@(self.betStepper.value) withColor:ButtonColor_Green];
     }
 }
 
 - (IBAction)yellowTapped:(id)sender {
-    if (_chosenColor == ButtonColor_UnPicked) {
+    if ((_chosenColor == ButtonColor_UnPicked) && (_buttonBucks.integerValue >= self.betStepper.value)) {
         [self outlineView:sender];
-        [self placeBetWithAmount:@1 withColor:ButtonColor_Yellow];
+        [self placeBetWithAmount:@(self.betStepper.value) withColor:ButtonColor_Yellow];
     }
 }
 
 - (IBAction)orangeTapped:(id)sender {
-    if (_chosenColor == ButtonColor_UnPicked) {
+    if ((_chosenColor == ButtonColor_UnPicked) && (_buttonBucks.integerValue >= self.betStepper.value)) {
         [self outlineView:sender];
-        [self placeBetWithAmount:@1 withColor:ButtonColor_Orange];
+        [self placeBetWithAmount:@(self.betStepper.value) withColor:ButtonColor_Orange];
     }
 }
 
 - (IBAction)redTapped:(id)sender {
-    if (_chosenColor == ButtonColor_UnPicked) {
+    if ((_chosenColor == ButtonColor_UnPicked) && (_buttonBucks.integerValue >= self.betStepper.value)) {
         [self outlineView:sender];
-        [self placeBetWithAmount:@1 withColor:ButtonColor_Red];
+        [self placeBetWithAmount:@(self.betStepper.value) withColor:ButtonColor_Red];
     }
 }
 
+- (IBAction)betChanged:(id)sender {
+    self.betLabel.text = [NSString stringWithFormat:@"Current Bet: %@", @(self.betStepper.value)];
+}
 
 @end

@@ -13,10 +13,12 @@ Don't know if i'll finish this...
 
 ## TODO
 
--  Allow variable sized bets
 -  Remember button bucks in between launches
 
 ## Release Notes
+
+###  v1.0.0 (2)
+-  Variable betting
 
 ###  v1.0.0 (1)
 -  Inital internal beta
